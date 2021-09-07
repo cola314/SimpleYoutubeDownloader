@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ReactiveUI;
+using SimpleYoutubeDownloader.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,55 +16,33 @@ using YoutubeExplode.Videos.Streams;
 
 namespace SimpleYoutubeDownloader
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IViewFor<MainViewModel>
     {
         const string VIDEO_FILE = "video.mp4";
         const string AUDIO_FILE = "audio.mp4";
 
         private Logger logger = Logger.Instance;
 
-        private bool isBusy_;
-        private bool IsBusy
-        {
-            get { return isBusy_; }
-            set
-            {
-                isBusy_ = value;
-                Invoke(new Action(() =>
-                {
-                    downloadButton.Enabled = !value;
-                }));
-            }
-        }
+        public MainViewModel ViewModel { get; set; }
 
-        private string status_;
-        private string Status
+        object IViewFor.ViewModel
         {
-            get { return status_; }
-            set
-            {
-                status_ = value;
-                Invoke(new Action(() =>
-                {
-                    progressLabel.Text = value;
-                }));
-            }
+            get => ViewModel;
+            set => ViewModel = value as MainViewModel;
         }
-        private int CurrentProgress
-        {
-            set
-            {
-                Invoke(new Action(() =>
-                {
-                    downloadProgressBar.Value = value;
-                }));
-            }
-        }
-
 
         public MainForm()
         {
             InitializeComponent();
+
+            this.WhenActivated(d =>
+            {
+                d(this.Bind(ViewModel, vm => vm.SearchText, v => v.downloadPathTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.StatusText, v => v.progressLabel.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.Progress, v => v.downloadProgressBar.Value));
+            });
+
+            ViewModel = new MainViewModel();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -80,13 +60,13 @@ namespace SimpleYoutubeDownloader
 
         private void downloadButton_Click(object sender, EventArgs e)
         {
-            if (IsBusy)
+            if (ViewModel.DownloadEnable)
             {
                 return;
             }
 
-            IsBusy = true;
-            Status = "다운로드 시작";
+            ViewModel.DownloadEnable = true;
+            ViewModel.StatusText = "다운로드 시작";
             logger.WriteLine("Start Download");
             var saveDialog = new SaveFileDialog();
             saveDialog.DefaultExt = ".mp4";
@@ -105,7 +85,7 @@ namespace SimpleYoutubeDownloader
                     try
                     {
                         // search video
-                        Status = "비디오 검색 중";
+                        ViewModel.StatusText = "비디오 검색 중";
                         logger.WriteLine($"Search Video Info");
                         logger.WriteLine($"URL : \"{downloadPath}\"\nSaveFile : \"{targetFileName}\"");
 
@@ -154,8 +134,8 @@ namespace SimpleYoutubeDownloader
 
                                 if (audioProgress + videoProgress != 100)
                                 {
-                                    CurrentProgress = audioProgress + videoProgress;
-                                    Status = $"다운로드 중 {audioProgress + videoProgress}% 완료";
+                                    ViewModel.Progress = audioProgress + videoProgress;
+                                    ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
                                 }
                             }));
 
@@ -171,8 +151,8 @@ namespace SimpleYoutubeDownloader
 
                                 if (audioProgress + videoProgress != 100)
                                 {
-                                    CurrentProgress = audioProgress + videoProgress;
-                                    Status = $"다운로드 중 {audioProgress + videoProgress}% 완료";
+                                    ViewModel.Progress = audioProgress + videoProgress;
+                                    ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
                                 }
                             }));
 
@@ -182,7 +162,7 @@ namespace SimpleYoutubeDownloader
 
                         // combine audio and video
                         logger.WriteLine("Start combine audio and video");
-                        Status = "mp4 변환 작업 중";
+                        ViewModel.StatusText = "mp4 변환 작업 중";
 
                         ProcessStartInfo startInfo = new ProcessStartInfo();
                         startInfo.UseShellExecute = false;
@@ -206,8 +186,8 @@ namespace SimpleYoutubeDownloader
 
                         logger.WriteLine("Finish combine audio and video");
 
-                        CurrentProgress = 100;
-                        Status = "다운로드 완료";
+                        ViewModel.Progress = 100;
+                        ViewModel.StatusText = "다운로드 완료";
                         MessageBox.Show("다운로드 완료", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         Process.Start("explorer.exe", Path.GetDirectoryName(targetFileName));
@@ -220,18 +200,18 @@ namespace SimpleYoutubeDownloader
                     }
                     catch(Exception ex)
                     {
-                        Status = "다운로드 실패";
+                        ViewModel.StatusText = "다운로드 실패";
                         logger.WriteLine(ex.ToString());
                         MessageBox.Show("다운로드 실패", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    IsBusy = false;
+                    ViewModel.DownloadEnable = false;
                 });
             }
             else
             {
-                Status = "다운로드 취소";
+                ViewModel.StatusText = "다운로드 취소";
                 logger.WriteLine("Cancel Download");
-                IsBusy = false;
+                ViewModel.DownloadEnable = false;
             }
         }
 
