@@ -123,37 +123,45 @@ namespace SimpleYoutubeDownloader
                         int audioProgress = 0, videoProgress = 0;
 
                         var videoDownload = youtube.Videos.Streams.DownloadAsync(videoStreamInfo, VIDEO_FILE,
-                            new ProgressAction(val =>
+                            new Progress<double>(val =>
                             {
-                                int newProgress = (int)(val * 50);
-                                if(newProgress / 5 > videoProgress / 5)
+                                Invoke(new Action(() =>
                                 {
-                                    logger.WriteLine($"Video download progress : {newProgress / 5 * 5}%");
-                                }
-                                videoProgress = newProgress;
+                                    int newProgress = (int) (val * 50);
+                                    if (newProgress / 5 > videoProgress / 5)
+                                    {
+                                        logger.WriteLine($"Video download progress : {newProgress / 5 * 5}%");
+                                    }
 
-                                if (audioProgress + videoProgress != 100)
-                                {
-                                    ViewModel.Progress = audioProgress + videoProgress;
-                                    ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
-                                }
+                                    videoProgress = newProgress;
+
+                                    if (audioProgress + videoProgress != 100)
+                                    {
+                                        ViewModel.Progress = audioProgress + videoProgress;
+                                        ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
+                                    }
+                                }));
                             }));
 
                         var audioDownload = youtube.Videos.Streams.DownloadAsync(audioStreamInfo, AUDIO_FILE,
-                            new ProgressAction(val =>
+                            new Progress<double>(val =>
                             {
-                                int newProgress = (int)(val * 50);
-                                if (newProgress / 5 > audioProgress / 5)
+                                Invoke(new Action(() =>
                                 {
-                                    logger.WriteLine($"Audio download progress : {2 * newProgress / 5 * 5}%");
-                                }
-                                audioProgress = newProgress;
+                                    int newProgress = (int) (val * 50);
+                                    if (newProgress / 5 > audioProgress / 5)
+                                    {
+                                        logger.WriteLine($"Audio download progress : {2 * newProgress / 5 * 5}%");
+                                    }
 
-                                if (audioProgress + videoProgress != 100)
-                                {
-                                    ViewModel.Progress = audioProgress + videoProgress;
-                                    ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
-                                }
+                                    audioProgress = newProgress;
+
+                                    if (audioProgress + videoProgress != 100)
+                                    {
+                                        ViewModel.Progress = audioProgress + videoProgress;
+                                        ViewModel.StatusText = $"다운로드 중 {audioProgress + videoProgress}% 완료";
+                                    }
+                                }));
                             }));
 
 
