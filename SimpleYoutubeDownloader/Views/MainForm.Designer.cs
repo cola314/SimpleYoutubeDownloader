@@ -1,5 +1,5 @@
 ﻿
-namespace SimpleYoutubeDownloader
+namespace SimpleYoutubeDownloader.Views
 {
     partial class MainForm
     {

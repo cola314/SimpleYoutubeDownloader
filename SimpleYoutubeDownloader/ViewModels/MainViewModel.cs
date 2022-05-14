@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +24,20 @@ namespace SimpleYoutubeDownloader.ViewModels
 
         public MainViewModel()
         {
-            StatusText = "진행상황";
             DownloadCommand = ReactiveCommand.Create(() => DownloadVideo());
+            _statusSubject = new BehaviorSubject<string>("진행상황");
+            _statusText = _statusSubject.ToProperty(this, x => x.StatusText, scheduler: RxApp.MainThreadScheduler);
         }
 
-        private string _statusText;
-        public string StatusText
+        private readonly BehaviorSubject<string> _statusSubject;
+
+        public void SetStatus(string status)
         {
-            get => _statusText;
-            set => this.RaiseAndSetIfChanged(ref _statusText, value);
+            _statusSubject.OnNext(status);
         }
+
+        private readonly ObservableAsPropertyHelper<string> _statusText; 
+        public string StatusText => _statusText.Value;
 
         private string _searchText;
         public string SearchText
@@ -65,7 +70,7 @@ namespace SimpleYoutubeDownloader.ViewModels
             }
 
             this.DownloadEnable = true;
-            this.StatusText = "다운로드 시작";
+            SetStatus("다운로드 시작");
             _logger.WriteLine("Start Download");
             var saveDialog = new SaveFileDialog();
             saveDialog.DefaultExt = ".mp4";
@@ -84,7 +89,7 @@ namespace SimpleYoutubeDownloader.ViewModels
                     try
                     {
                         // search video
-                        this.StatusText = "비디오 검색 중";
+                        SetStatus("비디오 검색 중");
                         _logger.WriteLine($"Search Video Info");
                         _logger.WriteLine($"URL : \"{downloadPath}\"\nSaveFile : \"{targetFileName}\"");
 
@@ -153,7 +158,7 @@ namespace SimpleYoutubeDownloader.ViewModels
                             .Subscribe(totalProgress =>
                             {
                                 this.Progress = totalProgress;
-                                this.StatusText = $"다운로드 중 {totalProgress}% 완료";
+                                SetStatus($"다운로드 중 {totalProgress}% 완료");
                             });
 
                         videoDownload.Connect();
@@ -164,7 +169,7 @@ namespace SimpleYoutubeDownloader.ViewModels
 
                         // combine audio and video
                         _logger.WriteLine("Start combine audio and video");
-                        this.StatusText = "mp4 변환 작업 중";
+                        SetStatus("mp4 변환 작업 중");
 
                         ProcessStartInfo startInfo = new ProcessStartInfo();
                         startInfo.UseShellExecute = false;
@@ -189,7 +194,7 @@ namespace SimpleYoutubeDownloader.ViewModels
                         _logger.WriteLine("Finish combine audio and video");
 
                         this.Progress = 100;
-                        this.StatusText = "다운로드 완료";
+                        SetStatus("다운로드 완료");
                         MessageBox.Show("다운로드 완료", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         Process.Start("explorer.exe", Path.GetDirectoryName(targetFileName));
@@ -202,7 +207,7 @@ namespace SimpleYoutubeDownloader.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        this.StatusText = "다운로드 실패";
+                        SetStatus("다운로드 실패");
                         _logger.WriteLine(ex.ToString());
                         MessageBox.Show("다운로드 실패", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -211,7 +216,7 @@ namespace SimpleYoutubeDownloader.ViewModels
             }
             else
             {
-                this.StatusText = "다운로드 취소";
+                SetStatus("다운로드 취소");
                 _logger.WriteLine("Cancel Download");
                 this.DownloadEnable = false;
             }
