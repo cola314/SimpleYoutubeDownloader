@@ -40,54 +40,58 @@ namespace SimpleYoutubeDownloader
             // downloadPathTextBox
             // 
             this.downloadPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.downloadPathTextBox.Location = new System.Drawing.Point(12, 21);
+            this.downloadPathTextBox.Location = new System.Drawing.Point(16, 26);
+            this.downloadPathTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.downloadPathTextBox.Name = "downloadPathTextBox";
-            this.downloadPathTextBox.Size = new System.Drawing.Size(749, 26);
+            this.downloadPathTextBox.Size = new System.Drawing.Size(997, 30);
             this.downloadPathTextBox.TabIndex = 0;
             // 
             // downloadButton
             // 
             this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.downloadButton.Location = new System.Drawing.Point(767, 21);
+            this.downloadButton.Location = new System.Drawing.Point(1023, 26);
+            this.downloadButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.downloadButton.Name = "downloadButton";
-            this.downloadButton.Size = new System.Drawing.Size(106, 26);
+            this.downloadButton.Size = new System.Drawing.Size(141, 32);
             this.downloadButton.TabIndex = 1;
             this.downloadButton.Text = "다운로드";
             this.downloadButton.UseVisualStyleBackColor = true;
-            this.downloadButton.Click += new System.EventHandler(this.downloadButton_Click);
             // 
             // downloadProgressBar
             // 
-            this.downloadProgressBar.Location = new System.Drawing.Point(15, 91);
+            this.downloadProgressBar.Location = new System.Drawing.Point(20, 112);
+            this.downloadProgressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.downloadProgressBar.Name = "downloadProgressBar";
-            this.downloadProgressBar.Size = new System.Drawing.Size(858, 23);
+            this.downloadProgressBar.Size = new System.Drawing.Size(1144, 28);
             this.downloadProgressBar.TabIndex = 2;
             // 
             // progressLabel
             // 
             this.progressLabel.AutoSize = true;
             this.progressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.progressLabel.Location = new System.Drawing.Point(12, 57);
+            this.progressLabel.Location = new System.Drawing.Point(16, 70);
+            this.progressLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.progressLabel.Name = "progressLabel";
-            this.progressLabel.Size = new System.Drawing.Size(57, 20);
+            this.progressLabel.Size = new System.Drawing.Size(72, 25);
             this.progressLabel.TabIndex = 3;
             this.progressLabel.Text = "진행상황";
             // 
             // logTextBox
             // 
             this.logTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.logTextBox.Location = new System.Drawing.Point(12, 133);
+            this.logTextBox.Location = new System.Drawing.Point(16, 164);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(861, 389);
+            this.logTextBox.Size = new System.Drawing.Size(1147, 478);
             this.logTextBox.TabIndex = 4;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(888, 534);
+            this.ClientSize = new System.Drawing.Size(1184, 657);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.progressLabel);
             this.Controls.Add(this.downloadProgressBar);
@@ -95,6 +99,7 @@ namespace SimpleYoutubeDownloader
             this.Controls.Add(this.downloadPathTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "SimpleYoutubeDownloader";
