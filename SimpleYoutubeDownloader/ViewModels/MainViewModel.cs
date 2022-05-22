@@ -12,6 +12,7 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SimpleYoutubeDownloader.Services;
 using YoutubeExplode;
 
 namespace SimpleYoutubeDownloader.ViewModels
@@ -168,30 +169,8 @@ namespace SimpleYoutubeDownloader.ViewModels
                         _logger.WriteLine("Finish download audio and video from server");
 
                         // combine audio and video
-                        _logger.WriteLine("Start combine audio and video");
                         SetStatus("mp4 변환 작업 중");
-
-                        ProcessStartInfo startInfo = new ProcessStartInfo();
-                        startInfo.UseShellExecute = false;
-                        startInfo.CreateNoWindow = true;
-                        startInfo.FileName = "ffmpeg.exe";
-                        startInfo.Arguments = $"-i {VIDEO_FILE} -i {AUDIO_FILE} -c:v copy -c:a aac \"{targetFileName}\"";
-                        startInfo.RedirectStandardOutput = true;
-                        startInfo.RedirectStandardError = true;
-                        _logger.WriteLine($"{startInfo.FileName} {startInfo.Arguments}");
-
-                        using (Process process = new Process())
-                        {
-                            process.StartInfo = startInfo;
-                            process.OutputDataReceived += Process_DataReceived;
-                            process.ErrorDataReceived += Process_DataReceived;
-                            process.Start();
-                            process.BeginOutputReadLine();
-                            process.BeginErrorReadLine();
-                            process.WaitForExit();
-                        }
-
-                        _logger.WriteLine("Finish combine audio and video");
+                        new AudioCombineService(_logger).CombineAudioToVideo(AUDIO_FILE, VIDEO_FILE, targetFileName);
 
                         this.Progress = 100;
                         SetStatus("다운로드 완료");
@@ -220,11 +199,6 @@ namespace SimpleYoutubeDownloader.ViewModels
                 _logger.WriteLine("Cancel Download");
                 this.DownloadEnable = false;
             }
-        }
-
-        private void Process_DataReceived(object sender, DataReceivedEventArgs e)
-        {
-            _logger.WriteLine(e.Data);
         }
     }
 }
