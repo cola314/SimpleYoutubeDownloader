@@ -19,7 +19,7 @@ namespace SimpleYoutubeDownloader.Services
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             startInfo.FileName = "ffmpeg.exe";
-            startInfo.Arguments = $"-i {videoFile} -i {audioFile} -c:v copy -c:a aac \"{targetFile}\"";
+            startInfo.Arguments = $"-y -i {videoFile} -i {audioFile} -c:v copy -c:a aac \"{targetFile}\"";
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
             _logger.WriteLine($"{startInfo.FileName} {startInfo.Arguments}");
