@@ -20,14 +20,14 @@ namespace SimpleYoutubeDownloader.Services
 
         private readonly BehaviorSubject<int> _progressSubject;
 
-        private readonly Subject<string> _statusSubject;
+        private readonly BehaviorSubject<string> _statusSubject;
 
         private readonly Logger _logger;
 
         public VideoDownloader(Logger logger)
         {
             _logger = logger;
-            _statusSubject = new Subject<string>();
+            _statusSubject = new BehaviorSubject<string>(string.Empty);
             _progressSubject = new BehaviorSubject<int>(0);
         }
 
@@ -119,8 +119,18 @@ namespace SimpleYoutubeDownloader.Services
                 _logger.WriteLine("Finish download audio and video from server");
 
                 // combine audio and video
-                SetStatus("mp4 변환 작업 중");
-                new AudioCombineService(_logger).CombineAudioToVideo(AUDIO_FILE, VIDEO_FILE, downloadFile);
+                SetStatus("mp4 변환 작업 시작");
+
+                AudioCombineService audioCombineService = new AudioCombineService(_logger);
+                audioCombineService.Progress
+                    .Do(x =>
+                    {
+                        _logger.WriteLine($"Mp4 Converting progress {x}%");
+                        SetStatus($"mp4 변환 작업 중 {x}% 완료");
+                    })
+                    .Subscribe(SetProgress);
+
+                audioCombineService.CombineAudioToVideo(AUDIO_FILE, VIDEO_FILE, downloadFile);
 
                 SetProgress(100);
                 SetStatus("다운로드 완료");
