@@ -3,6 +3,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Forms;
+using SimpleYoutubeDownloader.Properties;
 using SimpleYoutubeDownloader.Services;
 
 namespace SimpleYoutubeDownloader.ViewModels
@@ -74,14 +75,14 @@ namespace SimpleYoutubeDownloader.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    StatusText = "다운로드 실패";
+                    StatusText = Resources.DOWNLOAD_FAIL;
                     _logger.WriteLine(ex.ToString());
-                    MessageBox.Show("다운로드 실패", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(Resources.DOWNLOAD_FAIL, Resources.ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
             {
-                StatusText = "다운로드 취소";
+                StatusText = Resources.DOWNLOAD_CANCEL;
                 _logger.WriteLine("Cancel Download");
             }
 

@@ -9,6 +9,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ReactiveUI;
+using SimpleYoutubeDownloader.Properties;
 using YoutubeExplode;
 
 namespace SimpleYoutubeDownloader.Services
@@ -36,14 +37,14 @@ namespace SimpleYoutubeDownloader.Services
 
         public Task DownloadVideoAsync(string url, string downloadFile)
         {
-            SetStatus("다운로드 시작");
+            SetStatus(Resources.DOWNLOAD_START);
             _logger.WriteLine("Start Download");
 
             _logger.WriteLine($"Download Url : {url}");
             _logger.WriteLine($"Download Path : {downloadFile}");
 
             // search video
-            SetStatus("비디오 검색 중");
+            SetStatus(Resources.SEARCHING_VIDEO);
 
             return Task.Run(async () =>
             {
@@ -67,13 +68,13 @@ namespace SimpleYoutubeDownloader.Services
                 if (audioStreamInfo == null)
                 {
                     _logger.WriteLine("Audio stream info not found");
-                    throw new Exception("다운로드 가능한 오디오가 없습니다");
+                    throw new Exception(Resources.NO_AUDIO_AVALIABLE);
                 }
 
                 if (videoStreamInfo == null)
                 {
                     _logger.WriteLine("Video stream info not found");
-                    throw new Exception("다운로드 가능한 비디오가 없습니다");
+                    throw new Exception(Resources.NO_VIDEO_AVAILABLE);
                 }
 
                 // download video
@@ -112,7 +113,7 @@ namespace SimpleYoutubeDownloader.Services
                     .Subscribe(totalProgress =>
                     {
                         SetProgress(totalProgress);
-                        SetStatus($"다운로드 중 {totalProgress}% 완료");
+                        SetStatus(string.Format(Resources.DOWNLOAD_PROGRESS_MESSAGE, totalProgress));
                     });
 
                 videoDownload.Connect();
@@ -122,22 +123,22 @@ namespace SimpleYoutubeDownloader.Services
                 _logger.WriteLine("Finish download audio and video from server");
 
                 // combine audio and video
-                SetStatus("mp4 변환 작업 시작");
+                SetStatus(Resources.MP4_CONVERT_START);
 
                 AudioCombineService audioCombineService = new AudioCombineService(_logger);
                 audioCombineService.Progress
                     .Do(x =>
                     {
                         _logger.WriteLine($"Mp4 Converting progress {x}%");
-                        SetStatus($"mp4 변환 작업 중 {x}% 완료");
+                        SetStatus(string.Format(Resources.MP4_CONVERT_PROGRESS_MESSAGE, x));
                     })
                     .Subscribe(SetProgress);
 
                 audioCombineService.CombineAudioToVideo(AUDIO_FILE, VIDEO_FILE, downloadFile);
 
                 SetProgress(100);
-                SetStatus("다운로드 완료");
-                MessageBox.Show("다운로드 완료", "정보", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SetStatus(Resources.DOWNLOAD_COMPLATE);
+                MessageBox.Show(Resources.DOWNLOAD_COMPLATE, Resources.INFORMATION, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 Process.Start("explorer.exe", Path.GetDirectoryName(downloadFile));
 

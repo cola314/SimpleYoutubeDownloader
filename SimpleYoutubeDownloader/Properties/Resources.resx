@@ -46,7 +46,7 @@
     
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with 
-            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
     mimetype: application/x-microsoft.net.object.soap.base64
@@ -60,6 +60,7 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
@@ -68,9 +69,10 @@
               <xsd:sequence>
                 <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="name" use="required" type="xsd:string" />
               <xsd:attribute name="type" type="xsd:string" />
               <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
@@ -85,9 +87,10 @@
                 <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
                 <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
               <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
               <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
@@ -109,9 +112,45 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DOWNLOAD_CANCEL" xml:space="preserve">
+    <value>다운로드 취소</value>
+  </data>
+  <data name="DOWNLOAD_COMPLATE" xml:space="preserve">
+    <value>다운로드 완료</value>
+  </data>
+  <data name="DOWNLOAD_FAIL" xml:space="preserve">
+    <value>다운로드 실패</value>
+  </data>
+  <data name="DOWNLOAD_PROGRESS_MESSAGE" xml:space="preserve">
+    <value>다운로드 중 {0}% 완료</value>
+  </data>
+  <data name="DOWNLOAD_START" xml:space="preserve">
+    <value>다운로드 시작</value>
+  </data>
+  <data name="ERROR" xml:space="preserve">
+    <value>에러</value>
+  </data>
+  <data name="INFORMATION" xml:space="preserve">
+    <value>정보</value>
+  </data>
+  <data name="MP4_CONVERT_PROGRESS_MESSAGE" xml:space="preserve">
+    <value>mp4 변환 작업 중 {0}% 완료</value>
+  </data>
+  <data name="MP4_CONVERT_START" xml:space="preserve">
+    <value>mp4 변환 작업 시작</value>
+  </data>
+  <data name="NO_AUDIO_AVALIABLE" xml:space="preserve">
+    <value>다운로드 가능한 오디오가 없습니다</value>
+  </data>
+  <data name="NO_VIDEO_AVAILABLE" xml:space="preserve">
+    <value>다운로드 가능한 비디오가 없습니다</value>
+  </data>
+  <data name="SEARCHING_VIDEO" xml:space="preserve">
+    <value>비디오 검색 중</value>
+  </data>
 </root>
