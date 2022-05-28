@@ -13,7 +13,7 @@ namespace SimpleYoutubeDownloader.ViewModels
 
         public MainViewModel()
         {
-            DownloadCommand = ReactiveCommand.Create(DownloadVideo);
+            DownloadCommand = ReactiveCommand.Create(DownloadVideo, this.WhenAnyValue(x => x.DownloadEnable));
         }
 
         private string _statusText;
@@ -40,7 +40,7 @@ namespace SimpleYoutubeDownloader.ViewModels
             set => this.RaiseAndSetIfChanged(ref _progress, value);
         }
 
-        private bool _downloadEnable;
+        private bool _downloadEnable = true;
 
         public bool DownloadEnable
         {
@@ -52,8 +52,7 @@ namespace SimpleYoutubeDownloader.ViewModels
 
         private async void DownloadVideo()
         {
-            if (DownloadEnable) return;
-            DownloadEnable = true;
+            DownloadEnable = false;
 
             var saveDialog = new SaveFileDialog();
             saveDialog.DefaultExt = ".mp4";
@@ -61,9 +60,6 @@ namespace SimpleYoutubeDownloader.ViewModels
 
             if (saveDialog.ShowDialog() == DialogResult.OK)
             {
-                StatusText = "다운로드 시작";
-                _logger.WriteLine("Start Download");
-
                 var downloader = new VideoDownloader(_logger);
                 downloader.Status
                     .ObserveOn(RxApp.MainThreadScheduler)
@@ -89,7 +85,7 @@ namespace SimpleYoutubeDownloader.ViewModels
                 _logger.WriteLine("Cancel Download");
             }
 
-            DownloadEnable = false;
+            DownloadEnable = true;
         }
     }
 }

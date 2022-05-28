@@ -36,6 +36,9 @@ namespace SimpleYoutubeDownloader.Services
 
         public Task DownloadVideoAsync(string url, string downloadFile)
         {
+            SetStatus("다운로드 시작");
+            _logger.WriteLine("Start Download");
+
             _logger.WriteLine($"Download Url : {url}");
             _logger.WriteLine($"Download Path : {downloadFile}");
 
