@@ -61,7 +61,7 @@ namespace SimpleYoutubeDownloader.ViewModels
 
             if (saveDialog.ShowDialog() == DialogResult.OK)
             {
-                var downloader = new VideoDownloader(_logger);
+                var downloader = CreateVideoDownloader();
                 downloader.Status
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x => StatusText = x);
@@ -87,6 +87,12 @@ namespace SimpleYoutubeDownloader.ViewModels
             }
 
             DownloadEnable = true;
+        }
+
+        private VideoDownloader CreateVideoDownloader()
+        {
+            return new YtdlVideoDownloader(_logger);
+            //return new YoutubeExplodeVideoDownloader(_logger);
         }
     }
 }
